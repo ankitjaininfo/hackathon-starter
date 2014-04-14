@@ -20,6 +20,7 @@ node_modules
 .DS_Store
 Thumbs.db
 
+public/css/frameworks.css
 public/css/styles.css
 
 builtAssets
