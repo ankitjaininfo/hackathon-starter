@@ -97,7 +97,10 @@ app.use(function(req, res) {
   res.render('404');
 });
 app.use(express.errorHandler());
-app.locals.pretty = true;
+
+if(app.get('env') === 'development')
+	app.locals.pretty = true;
+
 /**
  * Application routes.
  */
