@@ -3,7 +3,17 @@
  */
 
 var express = require('express');
-var MongoStore = require('connect-mongo')(express);
+var cookieParser = require('cookie-parser');
+var compress = require('compression');
+var session = require('express-session');
+var bodyParser = require('body-parser');
+var favicon = require('static-favicon');
+var logger = require('morgan');
+var errorHandler = require('errorhandler');
+var csrf = require('csurf');
+var methodOverride = require('method-override');
+
+var MongoStore = require('connect-mongo')({ session: session });
 var flash = require('express-flash');
 var path = require('path');
 var mongoose = require('mongoose');
@@ -47,8 +57,8 @@ mongoose.connection.on('error', function() {
  */
 
 var hour = 3600000;
-var day = (hour * 24);
-var month = (day * 30);
+var day = hour * 24;
+var week = day * 7;
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -58,21 +68,22 @@ app.use(connectAssets({
   paths: ['public/css', 'public/js'],
   helperContext: app.locals
 }));
-app.use(express.compress());
-app.use(express.logger('dev'));
-app.use(express.cookieParser());
-app.use(express.json());
-app.use(express.urlencoded());
+app.use(compress());
+app.use(favicon());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 app.use(expressValidator());
-app.use(express.methodOverride());
-app.use(express.session({
+app.use(methodOverride());
+app.use(cookieParser());
+app.use(session({
   secret: secrets.sessionSecret,
   store: new MongoStore({
     url: secrets.db,
     auto_reconnect: true
   })
 }));
-app.use(express.csrf());
+app.use(csrf());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(function(req, res, next) {
@@ -82,7 +93,7 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(flash());
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: month }));
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
 app.use(function(req, res, next) {
   // Keep track of previous URL
   if (req.method !== 'GET') return next();
@@ -91,12 +102,6 @@ app.use(function(req, res, next) {
   req.session.returnTo = req.path;
   next();
 });
-app.use(app.router);
-app.use(function(req, res) {
-  res.status(404);
-  res.render('404');
-});
-app.use(express.errorHandler());
 
 if(app.get('env') === 'development')
 	app.locals.pretty = true;
@@ -126,10 +131,9 @@ app.get('/api', apiController.getApi);
 app.get('/api/lastfm', apiController.getLastfm);
 app.get('/api/nyt', apiController.getNewYorkTimes);
 app.get('/api/aviary', apiController.getAviary);
-app.get('/api/paypal', apiController.getPayPal);
-app.get('/api/paypal/success', apiController.getPayPalSuccess);
-app.get('/api/paypal/cancel', apiController.getPayPalCancel);
 app.get('/api/steam', apiController.getSteam);
+app.get('/api/stripe', apiController.getStripe);
+app.post('/api/stripe', apiController.postStripe);
 app.get('/api/scraping', apiController.getScraping);
 app.get('/api/twilio', apiController.getTwilio);
 app.post('/api/twilio', apiController.postTwilio);
@@ -185,6 +189,16 @@ app.get('/auth/venmo', passport.authorize('venmo', { scope: 'make_payments acces
 app.get('/auth/venmo/callback', passport.authorize('venmo', { failureRedirect: '/api' }), function(req, res) {
   res.redirect('/api/venmo');
 });
+
+
+// 404 error handler
+app.use(function(req, res) {
+  res.status(404);
+  res.render('404');
+});
+
+// 500 error handler
+app.use(errorHandler());
 
 /**
  * Start Express server.
