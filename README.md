@@ -135,13 +135,13 @@ project code. As soon as you start changing and moving things around, it will
 probably no longer work as expected. That is why it's best to use when you first
 download Hackathon Starter.
 
-:exclamation: **Note:** Generator has a "destructive" behavior, it will physically
+:exclamation: **Note:** Generator has a *destructive* behavior, i.e. it will physically
 modify your code. *There is no undo action.* To be on a safe side, always commit
 your code to Git, so you could go back and undo the changes.
 
 Currently it supports adding/removing authentication providers and switching
-between SendGrid/Mailgun email services. In the future you'll be able to use
-it to quickly add Socket.io support to your app, add Mozilla Persona sign-in,
+between **SendGrid** & **Mailgun** email services. In the future you'll be able to use
+it to add **Socket.io** support to your app, add **Mozilla Persona** sign-in,
 generate new pages (create new routes, templates and controllers for you
 automatically).
 
@@ -153,7 +153,7 @@ to obtain appropriate credentials: Client ID, Client Secret, API Key, or
 Username & Password. You will need to go through each provider to generate new
 credentials.
 
-**Hackathon Starter 2.0 Update:** I have included dummy keys and passwords for
+:collision:&nbsp;**Hackathon Starter 2.0 Update:** I have included dummy keys and passwords for
 all API examples to get you up and running even faster. But don't forget to update
 them with *your credentials* when you are ready to deploy an app.
 
