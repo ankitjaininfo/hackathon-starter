@@ -348,7 +348,6 @@ List of Packages
 | static-favicon                  | Express 4.0 middleware. |
 | express-session                 | Express 4.0 middleware. |
 | morgan                          | Express 4.0 middleware. |
-| csurf                           | Express 4.0 middleware. |
 | compression                     | Express 4.0 middleware. |
 | errorhandler                    | Express 4.0 middleware. |
 | method-override                 | Express 4.0 middleware. |
@@ -359,6 +358,7 @@ List of Packages
 | jade                            | Template engine for Express. |
 | lastfm                          | Last.fm API library. |
 | less                            | LESS compiler. Used implicitly by connect-assets. |
+| lusca                           | CSRF middleware.        |
 | mongoose                        | MongoDB ODM. |
 | node-foursquare                 | Foursquare API library. |
 | node-linkedin                   | LinkedIn API library. |
@@ -406,6 +406,9 @@ Recommended Design Resources
 - [Creative Button Styles](http://tympanus.net/Development/CreativeButtons/) - awesome button styles.
 - [Creative Link Effects](http://tympanus.net/Development/CreativeLinkEffects/) - Beautiful link effects in CSS.
 - [Medium Scroll Effect](http://codepen.io/andreasstorm/pen/pyjEh) - Fade in/out header background image as you scroll.
+- [GeoPattern](https://github.com/btmills/geopattern) - SVG background pattern generator.
+- [Trianglify](https://github.com/qrohlf/trianglify) - SVG low-poly background pattern generator.
+
 
 Recommended Node.js Libraries
 -----------------------------
@@ -459,8 +462,9 @@ as part of CSRF protection.
 ```
 input(type='hidden', name='_csrf', value=_csrf)
 ```
-You can read more about [CSRF protection middleware](http://expressjs.com/3x/api.html#csrf) at the Express API Reference.
 
+**Note:** It is now possible to whitelist certain URLs. In other words you can
+specify a list of routes that should bypass CSRF verification check.
 
 ### What is cluster_app.js?
 From the [Node.js Documentation](http://nodejs.org/api/cluster.html#cluster_how_it_works):
@@ -1117,6 +1121,12 @@ Add this to `package.json`, after *name* and *version*. This is necessary becaus
 
 Changelog
 ---------
+
+### 2.0.1 (April 18, 2014)
+- Conditional CSRF support using [lusca](https://github.com/krakenjs/lusca)
+- Fixed EOL problem in `generator.js` for Windows users
+- Fixed outdated csrf token string on profile.jade
+- Code cleanup
 
 ### 2.0.0 (April 15, 2014)
 There are have been over **500+** commits since the initial announcement in
