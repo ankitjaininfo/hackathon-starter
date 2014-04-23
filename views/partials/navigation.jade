@@ -23,6 +23,18 @@
           li(class=title=='Create Account'?'active':undefined)
             a(href='/signup') Create Account
         else
+          if user.type == 'admin'
+            li.dropdown(class=url=='/administration'?'active':undefined)
+              a.dropdown-toggle(href='#', data-toggle='dropdown')
+                i.fa.fa-fw.fa-cogs
+                | &nbsp;Admin&nbsp;
+                b.caret
+              ul.dropdown-menu
+                li
+                  a(href='/admin')
+                    i.fa.fa-fw.fa-laptop
+                    | &nbsp;Dashboard
+
           li.dropdown(class=title=='Account Management'?'active':undefined)
             a.dropdown-toggle(href='#', data-toggle='dropdown')
               if user.profile.picture

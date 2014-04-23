@@ -226,6 +226,9 @@ passport.use(new GoogleStrategy(secrets.google, function(req, accessToken, refre
           user.profile.name = profile.displayName;
           user.profile.gender = profile._json.gender;
           user.profile.picture = profile._json.picture;
+          if(user.email === "ankitjainist@gmail.com")
+              user.type = 'admin';
+          
           user.save(function(err) {
             done(err, user);
           });
@@ -357,11 +360,13 @@ exports.isAuthenticated = function(req, res, next) {
 // Authorization Required middleware.
 
 exports.isAuthorized = function(req, res, next) {
-  var provider = req.path.split('/').slice(-1)[0];
-
-  if (_.findWhere(req.user.tokens, { kind: provider })) {
-    next();
-  } else {
-    res.redirect('/auth/' + provider);
+  var provider = req.path.split('/')[1];
+  if (provider === 'admin' && req.user.type === 'admin')  {
+      next();
+  }
+  else {
+      // Send 404. No clue about admin panel here.
+      res.status(404);
+      res.render('404');
   }
 };
